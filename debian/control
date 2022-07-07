@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-core
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), libassimp-dev, libboost-all-dev, libbullet-dev, libeigen3-dev, libfcl-dev, pkg-config, ros-humble-ament-cmake, ros-humble-ament-cmake-gmock <!nocheck>, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-index-cpp <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-angles, ros-humble-angles <!nocheck>, ros-humble-common-interfaces, ros-humble-eigen-stl-containers, ros-humble-eigen3-cmake-module, ros-humble-geometric-shapes, ros-humble-geometry-msgs, ros-humble-kdl-parser, ros-humble-moveit-common, ros-humble-moveit-msgs, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-resources-pr2-description <!nocheck>, ros-humble-octomap, ros-humble-octomap-msgs, ros-humble-orocos-kdl-vendor <!nocheck>, ros-humble-pluginlib, ros-humble-pybind11-vendor, ros-humble-random-numbers, ros-humble-rclcpp, ros-humble-ruckig, ros-humble-sensor-msgs, ros-humble-shape-msgs, ros-humble-srdfdom, ros-humble-std-msgs, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-tf2-kdl <!nocheck>, ros-humble-trajectory-msgs, ros-humble-urdf, ros-humble-urdfdom, ros-humble-urdfdom-headers, ros-humble-visualization-msgs, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-core
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libassimp-dev, libboost-all-dev, libbullet-dev, libeigen3-dev, libfcl-dev, ros-humble-angles, ros-humble-common-interfaces, ros-humble-eigen-stl-containers, ros-humble-eigen3-cmake-module, ros-humble-geometric-shapes, ros-humble-geometry-msgs, ros-humble-kdl-parser, ros-humble-moveit-common, ros-humble-moveit-msgs, ros-humble-octomap, ros-humble-octomap-msgs, ros-humble-pluginlib, ros-humble-pybind11-vendor, ros-humble-random-numbers, ros-humble-rclcpp, ros-humble-ruckig, ros-humble-sensor-msgs, ros-humble-shape-msgs, ros-humble-srdfdom, ros-humble-std-msgs, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-trajectory-msgs, ros-humble-urdf, ros-humble-urdfdom, ros-humble-urdfdom-headers, ros-humble-visualization-msgs, ros-humble-ros-workspace
+Description: Core libraries used by MoveIt
