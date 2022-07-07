@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-configs-utils
+Section: misc
+Priority: optional
+Maintainer: MoveIt Release Team <moveit_releasers@googlegroups.com>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-ros-workspace, python3-all, python3-setuptools, dh-python
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-configs-utils
+Architecture: any
+Depends: ${python3:Depends}, ${misc:Depends}, ros-humble-ament-index-python, ros-humble-launch, ros-humble-launch-param-builder, ros-humble-launch-ros, ros-humble-srdfdom, ros-humble-ros-workspace
+Description: Python library for loading moveit config parameters in launch files
