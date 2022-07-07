@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-servo
+Section: misc
+Priority: optional
+Maintainer: Blake Anderson <blakeanderson@utexas.edu>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-control-msgs, ros-humble-control-toolbox, ros-humble-controller-manager <!nocheck>, ros-humble-geometry-msgs, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-ros-planning-interface, ros-humble-pluginlib, ros-humble-ros-testing <!nocheck>, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-std-srvs, ros-humble-tf2-eigen, ros-humble-trajectory-msgs, ros-humble-ros-workspace
+Homepage: https://ros-planning.github.io/moveit_tutorials
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-servo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-control-msgs, ros-humble-control-toolbox, ros-humble-geometry-msgs, ros-humble-gripper-controllers, ros-humble-joint-state-broadcaster, ros-humble-joint-trajectory-controller, ros-humble-joy, ros-humble-launch-param-builder, ros-humble-moveit-common, ros-humble-moveit-configs-utils, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-planning-interface, ros-humble-pluginlib, ros-humble-robot-state-publisher, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-std-srvs, ros-humble-tf2-eigen, ros-humble-tf2-ros, ros-humble-trajectory-msgs, ros-humble-ros-workspace
+Description: Provides real-time manipulator Cartesian and joint servoing.
