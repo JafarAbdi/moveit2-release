@@ -37,10 +37,14 @@
 
 #include <gtest/gtest.h>
 #include <memory>
-#include <boost/bind.hpp>
+#include <functional>
 #include <pluginlib/class_loader.hpp>
 #include <rclcpp/rclcpp.hpp>
+#if __has_include(<tf2_eigen/tf2_eigen.hpp>)
+#include <tf2_eigen/tf2_eigen.hpp>
+#else
 #include <tf2_eigen/tf2_eigen.h>
+#endif
 
 // MoveIt
 #include <moveit/kinematics_base/kinematics_base.h>
@@ -59,7 +63,6 @@ static const rclcpp::Logger LOGGER = rclcpp::get_logger("test_kinematics_plugin"
 const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
 const double DEFAULT_SEARCH_DISCRETIZATION = 0.01f;
 const double EXPECTED_SUCCESS_RATE = 0.8;
-const double DEFAULT_TOLERANCE = 1e-5;
 static const std::string UNDEFINED = "<undefined>";
 
 // As loading of parameters is quite slow, we share them across all tests
@@ -262,8 +265,7 @@ public:
     return testing::AssertionSuccess();
   }
 
-  void searchIKCallback(const geometry_msgs::msg::Pose& /*ik_pose*/, const std::vector<double>& joint_state,
-                        moveit_msgs::msg::MoveItErrorCodes& error_code)
+  void searchIKCallback(const std::vector<double>& joint_state, moveit_msgs::msg::MoveItErrorCodes& error_code)
   {
     std::vector<std::string> link_names = { tip_link_ };
     std::vector<geometry_msgs::msg::Pose> poses;
@@ -467,14 +469,14 @@ TEST_F(KinematicsTest, unitIK)
       ASSERT_EQ(truth.size(), sol.size()) << "Invalid size of ground truth joints vector";
       Eigen::Map<Eigen::ArrayXd> solution(sol.data(), sol.size());
       Eigen::Map<Eigen::ArrayXd> ground_truth(truth.data(), truth.size());
-      EXPECT_TRUE(solution.isApprox(ground_truth, 10 * tolerance_)) << solution.transpose() << std::endl
-                                                                    << ground_truth.transpose() << std::endl;
+      EXPECT_TRUE(solution.isApprox(ground_truth, 10 * tolerance_)) << solution.transpose() << '\n'
+                                                                    << ground_truth.transpose() << '\n';
     }
   };
 
   std::vector<double> ground_truth, pose_values;
-  constexpr char POSE_TYPE_RELATIVE[] = "relative";
-  constexpr char POSE_TYPE_ABSOLUTE[] = "absolute";
+  constexpr char pose_type_relative[] = "relative";
+  constexpr char pose_type_absolute[] = "absolute";
 
   /* process tests definitions on parameter server of the form
      pose_1:
@@ -489,8 +491,8 @@ TEST_F(KinematicsTest, unitIK)
   for (size_t i = 0; i < expected_test_poses; ++i)  // NOLINT(modernize-loop-convert)
   {
     const std::string pose_name = "pose_" + std::to_string(i);
-    const std::string pose_param = TEST_POSES_PARAM + "." + pose_name;
-    goal = initial;  // reset goal to initial
+    const std::string pose_param = TEST_POSES_PARAM + "." + pose_name;  // NOLINT
+    goal = initial;                                                     // reset goal to initial
     ground_truth.clear();
 
     node_->get_parameter_or(pose_param + ".joints", ground_truth, ground_truth);
@@ -507,15 +509,15 @@ TEST_F(KinematicsTest, unitIK)
 
     Eigen::Isometry3d pose;
     ASSERT_TRUE(parsePose(pose_values, pose)) << "Failed to parse 'pose' vector in: " << pose_name;
-    std::string pose_type = "POSE_TYPE_RELATIVE";
+    std::string pose_type = "pose_type_relative";
     node_->get_parameter_or(pose_param + ".type", pose_type, pose_type);
-    if (pose_type == POSE_TYPE_RELATIVE)
+    if (pose_type == pose_type_relative)
       goal = goal * pose;
-    else if (pose_type == POSE_TYPE_ABSOLUTE)
+    else if (pose_type == pose_type_absolute)
       goal = pose;
     else
-      FAIL() << "Found invalid 'type' in " << pose_name << ": should be one of '" << POSE_TYPE_RELATIVE << "' or '"
-             << POSE_TYPE_ABSOLUTE << "'";
+      FAIL() << "Found invalid 'type' in " << pose_name << ": should be one of '" << pose_type_relative << "' or '"
+             << pose_type_absolute << "'";
 
     std::string desc;
     {
@@ -586,8 +588,11 @@ TEST_F(KinematicsTest, searchIKWithCallback)
       continue;
     }
 
-    kinematics_solver_->searchPositionIK(poses[0], fk_values, timeout_, solution,
-                                         boost::bind(&KinematicsTest::searchIKCallback, this, _1, _2, _3), error_code);
+    kinematics_solver_->searchPositionIK(
+        poses[0], fk_values, timeout_, solution,
+        [this](const geometry_msgs::msg::Pose&, const std::vector<double>& joints,
+               moveit_msgs::msg::MoveItErrorCodes& error_code) { searchIKCallback(joints, error_code); },
+        error_code);
     if (error_code.val == error_code.SUCCESS)
       success++;
     else
@@ -628,7 +633,7 @@ TEST_F(KinematicsTest, getIK)
 
     Eigen::Map<Eigen::ArrayXd> sol(solution.data(), solution.size());
     Eigen::Map<Eigen::ArrayXd> truth(fk_values.data(), fk_values.size());
-    EXPECT_TRUE(sol.isApprox(truth, tolerance_)) << sol.transpose() << std::endl << truth.transpose() << std::endl;
+    EXPECT_TRUE(sol.isApprox(truth, tolerance_)) << sol.transpose() << '\n' << truth.transpose() << '\n';
   }
 }
 

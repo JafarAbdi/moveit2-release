@@ -38,20 +38,26 @@
  *      Author    : Adam Pettinger
  */
 
-// ROS
-#include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <control_msgs/msg/joint_jog.hpp>
 #include <std_srvs/srv/trigger.hpp>
 #include <moveit_msgs/msg/planning_scene.hpp>
+#include <rclcpp/client.hpp>
+#include <rclcpp/experimental/buffers/intra_process_buffer.hpp>
+#include <rclcpp/node.hpp>
+#include <rclcpp/publisher.hpp>
+#include <rclcpp/qos.hpp>
+#include <rclcpp/qos_event.hpp>
+#include <rclcpp/subscription.hpp>
+#include <rclcpp/time.hpp>
+#include <rclcpp/utilities.hpp>
 #include <thread>
 
 // We'll just set up parameters here
 const std::string JOY_TOPIC = "/joy";
-const std::string TWIST_TOPIC = "/servo_server/delta_twist_cmds";
-const std::string JOINT_TOPIC = "/servo_server/delta_joint_cmds";
-const size_t ROS_QUEUE_SIZE = 10;
+const std::string TWIST_TOPIC = "/servo_node/delta_twist_cmds";
+const std::string JOINT_TOPIC = "/servo_node/delta_joint_cmds";
 const std::string EEF_FRAME_ID = "panda_hand";
 const std::string BASE_FRAME_ID = "panda_link0";
 
@@ -158,15 +164,18 @@ public:
     : Node("joy_to_twist_publisher", options), frame_to_publish_(BASE_FRAME_ID)
   {
     // Setup pub/sub
-    joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
-        JOY_TOPIC, ROS_QUEUE_SIZE, std::bind(&JoyToServoPub::joyCB, this, std::placeholders::_1));
+    joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(JOY_TOPIC, rclcpp::SystemDefaultsQoS(),
+                                                                [this](const sensor_msgs::msg::Joy::SharedPtr msg) {
+                                                                  return joyCB(msg);
+                                                                });
 
-    twist_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>(TWIST_TOPIC, ROS_QUEUE_SIZE);
-    joint_pub_ = this->create_publisher<control_msgs::msg::JointJog>(JOINT_TOPIC, ROS_QUEUE_SIZE);
-    collision_pub_ = this->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
+    twist_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>(TWIST_TOPIC, rclcpp::SystemDefaultsQoS());
+    joint_pub_ = this->create_publisher<control_msgs::msg::JointJog>(JOINT_TOPIC, rclcpp::SystemDefaultsQoS());
+    collision_pub_ =
+        this->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", rclcpp::SystemDefaultsQoS());
 
-    // Create a service client to start the ServoServer
-    servo_start_client_ = this->create_client<std_srvs::srv::Trigger>("/servo_server/start_servo");
+    // Create a service client to start the ServoNode
+    servo_start_client_ = this->create_client<std_srvs::srv::Trigger>("/servo_node/start_servo");
     servo_start_client_->wait_for_service(std::chrono::seconds(1));
     servo_start_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
 

@@ -39,10 +39,17 @@
    Created   : 07/16/2020
 */
 
-// ROS
-#include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <std_srvs/srv/trigger.hpp>
+#include <rclcpp/client.hpp>
+#include <rclcpp/executors.hpp>
+#include <rclcpp/logger.hpp>
+#include <rclcpp/node.hpp>
+#include <rclcpp/node_options.hpp>
+#include <rclcpp/publisher.hpp>
+#include <rclcpp/qos_event.hpp>
+#include <rclcpp/time.hpp>
+#include <rclcpp/utilities.hpp>
 
 using namespace std::chrono_literals;
 
@@ -57,12 +64,12 @@ int main(int argc, char** argv)
 
   // Call the start service to init and start the servo component
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr servo_start_client =
-      node->create_client<std_srvs::srv::Trigger>("/servo_server/start_servo");
+      node->create_client<std_srvs::srv::Trigger>("/servo_node/start_servo");
   servo_start_client->wait_for_service(1s);
   servo_start_client->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
 
   // Create a publisher for publishing the jog commands
-  auto pub = node->create_publisher<geometry_msgs::msg::TwistStamped>("/servo_server/delta_twist_cmds", 10);
+  auto pub = node->create_publisher<geometry_msgs::msg::TwistStamped>("/servo_node/delta_twist_cmds", 10);
   std::weak_ptr<std::remove_pointer<decltype(pub.get())>::type> captured_pub = pub;
   std::weak_ptr<std::remove_pointer<decltype(node.get())>::type> captured_node = node;
   auto callback = [captured_pub, captured_node]() -> void {

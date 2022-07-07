@@ -7,13 +7,10 @@ set(MOVEIT_LIB_NAME moveit_ros_benchmarks)
 find_package(moveit_common REQUIRED)
 moveit_package()
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wpedantic)
-endif()
-
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2_eigen REQUIRED)
+find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_ros_warehouse REQUIRED)
 find_package(pluginlib REQUIRED)
@@ -27,6 +24,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
   Boost
   tf2_eigen
+  moveit_core
   moveit_ros_planning
   moveit_ros_warehouse
   pluginlib
@@ -37,9 +35,13 @@ add_library(${MOVEIT_LIB_NAME} SHARED
   src/BenchmarkExecutor.cpp
 )
 set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_VERSION}")
+if(WIN32)
+  set(EXTRA_LIB ws2_32.lib)
+endif()
 ament_target_dependencies(${MOVEIT_LIB_NAME}
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
+target_link_libraries(${MOVEIT_LIB_NAME} ${EXTRA_LIB})
 
 add_executable(moveit_run_benchmark src/RunBenchmark.cpp)
 ament_target_dependencies(moveit_run_benchmark
@@ -89,7 +91,6 @@ if(BUILD_TESTING)
 
   # These don't pass yet, disable them for now
   set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cppcheck_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   set(ament_cmake_flake8_FOUND TRUE)
   set(ament_cmake_pep257_FOUND TRUE)

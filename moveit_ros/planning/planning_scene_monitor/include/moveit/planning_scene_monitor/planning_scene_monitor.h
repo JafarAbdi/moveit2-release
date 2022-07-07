@@ -46,11 +46,13 @@
 #include <moveit/planning_scene_monitor/current_state_monitor.h>
 #include <moveit/collision_plugin_loader/collision_plugin_loader.h>
 #include <moveit_msgs/srv/get_planning_scene.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/thread/shared_mutex.hpp>
-#include <boost/thread/recursive_mutex.hpp>
 #include <memory>
 #include <thread>
+#include <shared_mutex>
+#include <mutex>
+#include <thread>
+
+#include "moveit_planning_scene_monitor_export.h"
 
 namespace planning_scene_monitor
 {
@@ -59,9 +61,19 @@ MOVEIT_CLASS_FORWARD(PlanningSceneMonitor);  // Defines PlanningSceneMonitorPtr,
 /**
  * @brief PlanningSceneMonitor
  * Subscribes to the topic \e planning_scene */
-class PlanningSceneMonitor : private boost::noncopyable
+class MOVEIT_PLANNING_SCENE_MONITOR_EXPORT PlanningSceneMonitor
 {
 public:
+  /**
+   * @brief PlanningSceneMonitor cannot be copy-constructed
+   */
+  PlanningSceneMonitor(const PlanningSceneMonitor&) = delete;
+
+  /**
+   * @brief PlanningSceneMonitor cannot be copy-assigned
+   */
+  PlanningSceneMonitor& operator=(const PlanningSceneMonitor&) = delete;
+
   enum SceneUpdateType
   {
     /** \brief No update */
@@ -109,8 +121,13 @@ public:
    *  @param tf_buffer A pointer to a tf2_ros::Buffer
    *  @param name A name identifying this planning scene monitor
    */
+  [[deprecated("Passing tf2_ros::Buffer to PlanningSceneMonitor's constructor is deprecated")]] PlanningSceneMonitor(
+      const rclcpp::Node::SharedPtr& node, const std::string& robot_description,
+      const std::shared_ptr<tf2_ros::Buffer>& /* unused */, const std::string& name = "")
+    : PlanningSceneMonitor(node, robot_description, name)
+  {
+  }
   PlanningSceneMonitor(const rclcpp::Node::SharedPtr& node, const std::string& robot_description,
-                       const std::shared_ptr<tf2_ros::Buffer>& tf_buffer = std::shared_ptr<tf2_ros::Buffer>(),
                        const std::string& name = "");
 
   /** @brief Constructor
@@ -118,8 +135,13 @@ public:
    *  @param tf_buffer A pointer to a tf2_ros::Buffer
    *  @param name A name identifying this planning scene monitor
    */
+  [[deprecated("Passing tf2_ros::Buffer to PlanningSceneMonitor's constructor is deprecated")]] PlanningSceneMonitor(
+      const rclcpp::Node::SharedPtr& node, const robot_model_loader::RobotModelLoaderPtr& rml,
+      const std::shared_ptr<tf2_ros::Buffer>& /* unused */, const std::string& name = "")
+    : PlanningSceneMonitor(node, rml, name)
+  {
+  }
   PlanningSceneMonitor(const rclcpp::Node::SharedPtr& node, const robot_model_loader::RobotModelLoaderPtr& rml,
-                       const std::shared_ptr<tf2_ros::Buffer>& tf_buffer = std::shared_ptr<tf2_ros::Buffer>(),
                        const std::string& name = "");
 
   /** @brief Constructor
@@ -128,10 +150,15 @@ public:
    *  @param tf_buffer A pointer to a tf2_ros::Buffer
    *  @param name A name identifying this planning scene monitor
    */
+  [[deprecated("Passing tf2_ros::Buffer to PlanningSceneMonitor's constructor is deprecated")]] PlanningSceneMonitor(
+      const rclcpp::Node::SharedPtr& node, const planning_scene::PlanningScenePtr& scene,
+      const std::string& robot_description, const std::shared_ptr<tf2_ros::Buffer>& /* unused */,
+      const std::string& name = "")
+    : PlanningSceneMonitor(node, scene, robot_description, name)
+  {
+  }
   PlanningSceneMonitor(const rclcpp::Node::SharedPtr& node, const planning_scene::PlanningScenePtr& scene,
-                       const std::string& robot_description,
-                       const std::shared_ptr<tf2_ros::Buffer>& tf_buffer = std::shared_ptr<tf2_ros::Buffer>(),
-                       const std::string& name = "");
+                       const std::string& robot_description, const std::string& name = "");
 
   /** @brief Constructor
    *  @param scene The scene instance to maintain up to date with monitored information
@@ -139,10 +166,15 @@ public:
    *  @param tf_buffer A pointer to a tf2_ros::Buffer
    *  @param name A name identifying this planning scene monitor
    */
+  [[deprecated("Passing tf2_ros::Buffer to PlanningSceneMonitor's constructor is deprecated")]] PlanningSceneMonitor(
+      const rclcpp::Node::SharedPtr& node, const planning_scene::PlanningScenePtr& scene,
+      const robot_model_loader::RobotModelLoaderPtr& rml, const std::shared_ptr<tf2_ros::Buffer>& /* unused */,
+      const std::string& name = "")
+    : PlanningSceneMonitor(node, scene, rml, name)
+  {
+  }
   PlanningSceneMonitor(const rclcpp::Node::SharedPtr& node, const planning_scene::PlanningScenePtr& scene,
-                       const robot_model_loader::RobotModelLoaderPtr& rml,
-                       const std::shared_ptr<tf2_ros::Buffer>& tf_buffer = std::shared_ptr<tf2_ros::Buffer>(),
-                       const std::string& name = "");
+                       const robot_model_loader::RobotModelLoaderPtr& rml, const std::string& name = "");
 
   ~PlanningSceneMonitor();
 
@@ -355,7 +387,7 @@ public:
   void stopWorldGeometryMonitor();
 
   /** @brief Add a function to be called when an update to the scene is received */
-  void addUpdateCallback(const boost::function<void(SceneUpdateType)>& fn);
+  void addUpdateCallback(const std::function<void(SceneUpdateType)>& fn);
 
   /** @brief Clear the functions to be called when an update to the scene is received */
   void clearUpdateCallbacks();
@@ -381,6 +413,17 @@ public:
    */
   bool waitForCurrentRobotState(const rclcpp::Time& t, double wait_time = 1.);
 
+  void clearOctomap();
+
+  // Called to update the planning scene with a new message.
+  bool newPlanningSceneMessage(const moveit_msgs::msg::PlanningScene& scene);
+
+protected:
+  /** @brief Initialize the planning scene monitor
+   *  @param scene The scene instance to fill with data (an instance is allocated if the one passed in is not allocated)
+   */
+  void initialize(const planning_scene::PlanningScenePtr& scene);
+
   /** \brief Lock the scene for reading (multiple threads can lock for reading at the same time) */
   void lockSceneRead();
 
@@ -394,17 +437,6 @@ public:
   /** \brief Lock the scene from writing (only one thread can lock for writing and no other thread can lock for reading)
    */
   void unlockSceneWrite();
-
-  void clearOctomap();
-
-  // Called to update the planning scene with a new message.
-  bool newPlanningSceneMessage(const moveit_msgs::msg::PlanningScene& scene);
-
-protected:
-  /** @brief Initialize the planning scene monitor
-   *  @param scene The scene instance to fill with data (an instance is allocated if the one passed in is not allocated)
-   */
-  void initialize(const planning_scene::PlanningScenePtr& scene);
 
   /** @brief Configure the collision matrix for a particular scene */
   void configureCollisionMatrix(const planning_scene::PlanningScenePtr& scene);
@@ -453,7 +485,7 @@ protected:
   planning_scene::PlanningScenePtr scene_;
   planning_scene::PlanningSceneConstPtr scene_const_;
   planning_scene::PlanningScenePtr parent_scene_;  /// if diffs are monitored, this is the pointer to the parent scene
-  boost::shared_mutex scene_update_mutex_;         /// mutex for stored scene
+  std::shared_mutex scene_update_mutex_;           /// mutex for stored scene
   rclcpp::Time last_update_time_;                  /// Last time the state was updated
   rclcpp::Time last_robot_motion_time_;            /// Last time the robot has moved
 
@@ -467,6 +499,7 @@ protected:
   std::thread private_executor_thread_;
 
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
   std::string robot_description_;
 
@@ -485,11 +518,11 @@ protected:
 
   // variables for planning scene publishing
   rclcpp::Publisher<moveit_msgs::msg::PlanningScene>::SharedPtr planning_scene_publisher_;
-  std::unique_ptr<boost::thread> publish_planning_scene_;
+  std::unique_ptr<std::thread> publish_planning_scene_;
   double publish_planning_scene_frequency_;
   SceneUpdateType publish_update_types_;
   std::atomic<SceneUpdateType> new_scene_update_;
-  boost::condition_variable_any new_scene_update_condition_;
+  std::condition_variable_any new_scene_update_condition_;
 
   // subscribe to various sources of data
   rclcpp::Subscription<moveit_msgs::msg::PlanningScene>::SharedPtr planning_scene_subscriber_;
@@ -519,12 +552,12 @@ protected:
   LinkShapeHandles link_shape_handles_;
   AttachedBodyShapeHandles attached_body_shape_handles_;
   CollisionBodyShapeHandles collision_body_shape_handles_;
-  mutable boost::recursive_mutex shape_handles_lock_;
+  mutable std::recursive_mutex shape_handles_lock_;
 
   /// lock access to update_callbacks_
-  boost::recursive_mutex update_lock_;
-  std::vector<boost::function<void(SceneUpdateType)> > update_callbacks_;  /// List of callbacks to trigger when updates
-                                                                           /// are received
+  std::recursive_mutex update_lock_;
+  std::vector<std::function<void(SceneUpdateType)> > update_callbacks_;  /// List of callbacks to trigger when updates
+                                                                         /// are received
 
 private:
   void getUpdatedFrameTransforms(std::vector<geometry_msgs::msg::TransformStamped>& transforms);
@@ -580,6 +613,11 @@ private:
   collision_detection::CollisionPluginLoader collision_loader_;
 
   rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr callback_handler_;
+
+  bool use_sim_time_;
+
+  friend class LockedPlanningSceneRO;
+  friend class LockedPlanningSceneRW;
 };
 
 /** \brief This is a convenience class for obtaining access to an
@@ -622,7 +660,7 @@ public:
     return planning_scene_monitor_ && planning_scene_monitor_->getPlanningScene();
   }
 
-  operator const planning_scene::PlanningSceneConstPtr &() const
+  operator const planning_scene::PlanningSceneConstPtr&() const
   {
     return static_cast<const PlanningSceneMonitor*>(planning_scene_monitor_.get())->getPlanningScene();
   }
@@ -642,7 +680,7 @@ protected:
   void initialize(bool read_only)
   {
     if (planning_scene_monitor_)
-      lock_.reset(new SingleUnlock(planning_scene_monitor_.get(), read_only));
+      lock_ = std::make_shared<SingleUnlock>(planning_scene_monitor_.get(), read_only);
   }
 
   MOVEIT_STRUCT_FORWARD(SingleUnlock);
@@ -703,7 +741,7 @@ public:
   {
   }
 
-  operator const planning_scene::PlanningScenePtr &()
+  operator const planning_scene::PlanningScenePtr&()
   {
     return planning_scene_monitor_->getPlanningScene();
   }

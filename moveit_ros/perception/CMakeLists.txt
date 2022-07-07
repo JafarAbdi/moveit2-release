@@ -7,13 +7,6 @@ moveit_package()
 
 option(WITH_OPENGL "Build the parts that depend on OpenGL" ON)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wpedantic)
-endif()
-
-# Finds Boost Components
-include(ConfigExtras.cmake)
-
 if(WITH_OPENGL)
   # Prefer newer vendor-specific OpenGL library
   if(POLICY CMP0072)
@@ -28,7 +21,11 @@ if(WITH_OPENGL)
     set(SYSTEM_GL_LIBRARIES ${GLEW_LIBRARIES} GLEW::GLEW FreeGLUT::freeglut)
   else()
     find_package(GLUT REQUIRED)
-    set(SYSTEM_GL_LIBRARIES ${GLEW_LIBRARIES} GLUT::GLUT)
+    if(WIN32)
+      set(SYSTEM_GL_LIBRARIES GLEW::glew GLUT::GLUT)
+    else()
+      set(SYSTEM_GL_LIBRARIES ${GLEW_LIBRARIES} GLUT::GLUT)
+    endif()
   endif()
   set(perception_GL_INCLUDE_DIRS "mesh_filter/include" "depth_image_octomap_updater/include")
   set(SYSTEM_GL_INCLUDE_DIRS ${GLEW_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
@@ -57,6 +54,9 @@ find_package(moveit_ros_occupancy_map_monitor REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(OpenCV)
+
+# Finds Boost Components
+include(ConfigExtras.cmake)
 
 set(THIS_PACKAGE_INCLUDE_DIRS
   depth_image_octomap_updater/include
@@ -130,7 +130,6 @@ if(BUILD_TESTING)
 
   # These don't pass yet, disable them for now
   set(ament_cmake_copyright_FOUND TRUE)
-  set(ament_cmake_cppcheck_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   set(ament_cmake_uncrustify_FOUND TRUE)
 

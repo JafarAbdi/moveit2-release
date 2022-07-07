@@ -42,7 +42,7 @@
 #include <moveit/robot_state/robot_state.h>
 #include <geometry_msgs/msg/pose_stamped.h>
 #include <moveit/robot_state/conversions.h>
-#include <moveit_msgs/msg/move_it_error_codes.h>
+#include <moveit/utils/moveit_error_code.h>
 
 namespace moveit_cpp
 {
@@ -53,34 +53,7 @@ class PlanningComponent
 public:
   MOVEIT_STRUCT_FORWARD(PlanSolution);
 
-  class MoveItErrorCode : public moveit_msgs::msg::MoveItErrorCodes
-  {
-  public:
-    MoveItErrorCode()
-    {
-      val = 0;
-    }
-    MoveItErrorCode(int code)
-    {
-      val = code;
-    }
-    MoveItErrorCode(const moveit_msgs::msg::MoveItErrorCodes& code)
-    {
-      val = code.val;
-    }
-    explicit operator bool() const
-    {
-      return val == moveit_msgs::msg::MoveItErrorCodes::SUCCESS;
-    }
-    bool operator==(const int code) const
-    {
-      return val == code;
-    }
-    bool operator!=(const int code) const
-    {
-      return val != code;
-    }
-  };
+  using MoveItErrorCode [[deprecated("Use moveit::core::MoveItErrorCode")]] = moveit::core::MoveItErrorCode;
 
   /// The representation of a plan solution
   struct PlanSolution
@@ -92,7 +65,7 @@ public:
     robot_trajectory::RobotTrajectoryPtr trajectory;
 
     /// Reason why the plan failed
-    MoveItErrorCode error_code;
+    moveit::core::MoveItErrorCode error_code;
 
     explicit operator bool() const
     {
@@ -178,6 +151,9 @@ public:
   /** \brief Set the goal constraints generated from a named target state */
   bool setGoal(const std::string& named_target);
 
+  /** \brief Set the path constraints generated from a moveit msg Constraints */
+  bool setPathConstraints(const moveit_msgs::msg::Constraints& path_constraints);
+
   /** \brief Run a plan from start or current state to fulfill the last goal constraints provided by setGoal() using
    * default parameters. */
   PlanSolution plan();
@@ -205,6 +181,7 @@ private:
   // The start state used in the planning motion request
   moveit::core::RobotStatePtr considered_start_state_;
   std::vector<moveit_msgs::msg::Constraints> current_goal_constraints_;
+  moveit_msgs::msg::Constraints current_path_constraints_;
   PlanRequestParameters plan_request_parameters_;
   moveit_msgs::msg::WorkspaceParameters workspace_parameters_;
   bool workspace_parameters_set_ = false;
@@ -215,7 +192,7 @@ private:
   // double goal_joint_tolerance_;
   // double goal_position_tolerance_;
   // double goal_orientation_tolerance_;
-  // TODO(henningkayser): implment path/trajectory constraints
+  // TODO(henningkayser): implement path/trajectory constraints
   // std::unique_ptr<moveit_msgs::msg::Constraints> path_constraints_;
   // std::unique_ptr<moveit_msgs::msg::TrajectoryConstraints> trajectory_constraints_;
 

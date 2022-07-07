@@ -36,6 +36,11 @@
 
 #include <moveit/constraint_samplers/constraint_sampler_tools.h>
 #include <moveit/constraint_samplers/constraint_sampler_manager.h>
+#include <rclcpp/clock.hpp>
+#include <rclcpp/duration.hpp>
+#include <rclcpp/logger.hpp>
+#include <rclcpp/logging.hpp>
+#include <rclcpp/time.hpp>
 
 namespace constraint_samplers
 {
@@ -67,7 +72,7 @@ double countSamplesPerSecond(const ConstraintSamplerPtr& sampler, const moveit::
   moveit::core::RobotState ks(reference_state);
   unsigned long int valid = 0;
   unsigned long int total = 0;
-  rclcpp::Time end = rclcpp::Clock().now() + rclcpp::Duration(1.0);
+  rclcpp::Time end = rclcpp::Clock().now() + rclcpp::Duration::from_seconds(1);
   do
   {
     static const unsigned int N = 10;
@@ -117,7 +122,7 @@ void visualizeDistribution(const ConstraintSamplerPtr& sampler, const moveit::co
     mk.pose.orientation.w = 1.0;
     mk.scale.x = mk.scale.y = mk.scale.z = 0.035;
     mk.color = color;
-    mk.lifetime = rclcpp::Duration(30.0);
+    mk.lifetime = rclcpp::Duration::from_seconds(30);
     markers.markers.push_back(mk);
   }
 }

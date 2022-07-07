@@ -48,10 +48,9 @@
 #include <rviz_common/display_context.hpp>
 #include <rviz_default_plugins/robot/robot.hpp>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/math/constants/constants.hpp>
-
+#include <math.h>
 #include <memory>
+#include <string>
 
 namespace moveit_rviz_plugin
 {
@@ -156,11 +155,14 @@ void RenderShapes::renderShape(Ogre::SceneNode* node, const shapes::Shape* s, co
 
     case shapes::OCTREE:
     {
-      OcTreeRenderPtr octree(new OcTreeRender(static_cast<const shapes::OcTree*>(s)->octree, octree_voxel_rendering,
-                                              octree_color_mode, 0u, node));
-      octree->setPosition(position);
-      octree->setOrientation(orientation);
-      octree_voxel_grids_.push_back(octree);
+      if (octree_voxel_rendering != OCTOMAP_DISABLED)
+      {
+        auto octree = std::make_shared<moveit_rviz_plugin::OcTreeRender>(
+            static_cast<const shapes::OcTree*>(s)->octree, octree_voxel_rendering, octree_color_mode, 0u, node);
+        octree->setPosition(position);
+        octree->setOrientation(orientation);
+        octree_voxel_grids_.push_back(octree);
+      }
     }
     break;
 
@@ -176,8 +178,7 @@ void RenderShapes::renderShape(Ogre::SceneNode* node, const shapes::Shape* s, co
     {
       // in geometric shapes, the z axis of the cylinder is its height;
       // for the rviz shape, the y axis is the height; we add a transform to fix this
-      static Ogre::Quaternion fix(Ogre::Radian(boost::math::constants::pi<double>() / 2.0),
-                                  Ogre::Vector3(1.0, 0.0, 0.0));
+      static Ogre::Quaternion fix(Ogre::Radian(M_PI / 2.0), Ogre::Vector3(1.0, 0.0, 0.0));
       orientation = orientation * fix;
     }
 

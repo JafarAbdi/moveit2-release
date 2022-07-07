@@ -68,7 +68,7 @@ int initRepeatedPointTrajectory(robot_trajectory::RobotTrajectory& trajectory)
   moveit::core::RobotState state(trajectory.getRobotModel());
 
   trajectory.clear();
-  for (i = 0; i < num; i++)
+  for (i = 0; i < num; ++i)
   {
     state.setVariablePosition(idx[0], 1.0);
     trajectory.addSuffixWayPoint(state, 0.0);
@@ -78,10 +78,7 @@ int initRepeatedPointTrajectory(robot_trajectory::RobotTrajectory& trajectory)
 }
 
 // Initialize one-joint, straight-line trajectory
-// Can specify init/final velocity/acceleration,
-// but not all time parameterization methods may accept it.
-int initStraightTrajectory(robot_trajectory::RobotTrajectory& trajectory, double vel_i = 0.0, double vel_f = 0.0,
-                           double acc_i = 0.0, double acc_f = 0.0)
+int initStraightTrajectory(robot_trajectory::RobotTrajectory& trajectory)
 {
   const int num = 10;
   const double max = 2.0;
@@ -98,7 +95,7 @@ int initStraightTrajectory(robot_trajectory::RobotTrajectory& trajectory, double
   moveit::core::RobotState state(trajectory.getRobotModel());
 
   trajectory.clear();
-  for (i = 0; i < num; i++)
+  for (i = 0; i < num; ++i)
   {
     state.setVariablePosition(idx[0], i * max / num);
     trajectory.addSuffixWayPoint(state, 0.0);
@@ -115,26 +112,7 @@ void printTrajectory(robot_trajectory::RobotTrajectory& trajectory)
 {
   const moveit::core::JointModelGroup* group = trajectory.getGroup();
   const std::vector<int>& idx = group->getVariableIndexList();
-  unsigned int count = trajectory.getWayPointCount();
-
-  std::cout << "trajectory length is " << trajectory.getWayPointDurationFromStart(count - 1) << " seconds."
-            << std::endl;
-  std::cout << "  Trajectory Points" << std::endl;
-  for (unsigned i = 0; i < count; i++)
-  {
-    moveit::core::RobotStatePtr point = trajectory.getWayPointPtr(i);
-    printf("  waypoint %2d time %6.2f pos %6.2f vel %6.2f acc %6.2f ", i, trajectory.getWayPointDurationFromStart(i),
-           point->getVariablePosition(idx[0]), point->getVariableVelocity(idx[0]),
-           point->getVariableAcceleration(idx[0]));
-    if (i > 0)
-    {
-      moveit::core::RobotStatePtr prev = trajectory.getWayPointPtr(i - 1);
-      printf("jrk %6.2f",
-             (point->getVariableAcceleration(idx[0]) - prev->getVariableAcceleration(idx[0])) /
-                 (trajectory.getWayPointDurationFromStart(i) - trajectory.getWayPointDurationFromStart(i - 1)));
-    }
-    printf("\n");
-  }
+  trajectory.print(std::cout, { idx[0] });
 }
 
 TEST(TestTimeParameterization, TestIterativeParabolic)
@@ -146,7 +124,7 @@ TEST(TestTimeParameterization, TestIterativeParabolic)
   EXPECT_TRUE(time_parameterization.computeTimeStamps(TRAJECTORY));
 
   std::cout << "IterativeParabolicTimeParameterization  took " << (std::chrono::system_clock::now() - wt).count()
-            << std::endl;
+            << '\n';
   printTrajectory(TRAJECTORY);
   ASSERT_LT(TRAJECTORY.getWayPointDurationFromStart(TRAJECTORY.getWayPointCount() - 1), 3.0);
 }
@@ -158,7 +136,7 @@ TEST(TestTimeParameterization, TestIterativeSpline)
 
   auto wt = std::chrono::system_clock::now();
   EXPECT_TRUE(time_parameterization.computeTimeStamps(TRAJECTORY));
-  std::cout << "IterativeSplineParameterization took " << (std::chrono::system_clock::now() - wt).count() << std::endl;
+  std::cout << "IterativeSplineParameterization took " << (std::chrono::system_clock::now() - wt).count() << '\n';
   printTrajectory(TRAJECTORY);
   ASSERT_LT(TRAJECTORY.getWayPointDurationFromStart(TRAJECTORY.getWayPointCount() - 1), 5.0);
 }
@@ -171,7 +149,7 @@ TEST(TestTimeParameterization, TestIterativeSplineAddPoints)
   auto wt = std::chrono::system_clock::now();
   EXPECT_TRUE(time_parameterization.computeTimeStamps(TRAJECTORY));
   std::cout << "IterativeSplineParameterization with added points took "
-            << (std::chrono::system_clock::now() - wt).count() << std::endl;
+            << (std::chrono::system_clock::now() - wt).count() << '\n';
   printTrajectory(TRAJECTORY);
   ASSERT_LT(TRAJECTORY.getWayPointDurationFromStart(TRAJECTORY.getWayPointCount() - 1), 5.0);
 }

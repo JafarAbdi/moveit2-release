@@ -48,16 +48,9 @@
 #include <std_msgs/msg/float64.hpp>
 
 #include <moveit_servo/servo_parameters.h>
-#include <moveit_servo/low_pass_filter.h>
 
 namespace moveit_servo
 {
-enum CollisionCheckType
-{
-  K_THRESHOLD_DISTANCE = 1,
-  K_STOP_DISTANCE = 2
-};
-
 class CollisionCheck
 {
 public:
@@ -71,7 +64,10 @@ public:
 
   ~CollisionCheck()
   {
-    timer_->cancel();
+    if (timer_)
+    {
+      timer_->cancel();
+    }
   }
 
   /** \brief start the Timer that regulates collision check rate */
@@ -101,12 +97,10 @@ private:
 
   // Robot state and collision matrix from planning scene
   std::shared_ptr<moveit::core::RobotState> current_state_;
-  collision_detection::AllowedCollisionMatrix acm_;
 
   // Scale robot velocity according to collision proximity and user-defined thresholds.
   // I scaled exponentially (cubic power) so velocity drops off quickly after the threshold.
   // Proximity decreasing --> decelerate
-  CollisionCheckType collision_check_type_;
   double velocity_scale_ = 1;
   double self_collision_distance_ = 0;
   double scene_collision_distance_ = 0;
@@ -114,11 +108,6 @@ private:
   bool paused_ = false;
 
   // Variables for stop-distance-based collision checking
-  double current_collision_distance_ = 0;
-  double derivative_of_collision_distance_ = 0;
-  double prev_collision_distance_ = 0;
-  double est_time_to_collision_ = 0;
-  double safety_factor_ = 1000;
   double worst_case_stop_time_ = std::numeric_limits<double>::max();
 
   const double self_velocity_scale_coefficient_;

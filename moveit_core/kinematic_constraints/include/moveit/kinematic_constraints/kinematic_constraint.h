@@ -185,7 +185,7 @@ MOVEIT_CLASS_FORWARD(JointConstraint);  // Defines JointConstraintPtr, ConstPtr,
  *
  * This class handles single DOF constraints expressed as a tolerance
  * above and below a target position.  Multi-DOF joints can be
- * accomodated by using local name formulations - i.e. for a planar
+ * accommodated by using local name formulations - i.e. for a planar
  * joint specifying a constraint in terms of "planar_joint_name"/x.
  *
  * Continuous revolute single DOF joints will be evaluated based on
@@ -253,7 +253,7 @@ public:
   /**
    * \brief Get the joint model for which this constraint operates
    *
-   * @return The relevant joint model if enabled, and otherwise NULL
+   * @return The relevant joint model if enabled, and otherwise nullptr
    */
   const moveit::core::JointModel* getJointModel() const
   {
@@ -339,9 +339,9 @@ MOVEIT_CLASS_FORWARD(OrientationConstraint);  // Defines OrientationConstraintPt
  * This class expresses an orientation constraint on a particular
  * link.  The constraint is specified in terms of a quaternion, with
  * tolerances on X,Y, and Z axes.  The rotation difference is computed
- * based on the XYZ Euler angle formulation (intrinsic rotations).  The header on the
- * quaternion can be specified in terms of either a fixed frame or a
- * mobile frame.  The type value will return ORIENTATION_CONSTRAINT.
+ * based on the XYZ Euler angle formulation (intrinsic rotations) or as a rotation vector. This depends on the
+ * `Parameterization` type. The header on the quaternion can be specified in terms of either a fixed or a mobile
+ * frame.  The type value will return ORIENTATION_CONSTRAINT.
  *
  */
 class OrientationConstraint : public KinematicConstraint
@@ -478,6 +478,11 @@ public:
     return absolute_z_axis_tolerance_;
   }
 
+  int getParameterizationType() const
+  {
+    return parameterization_type_;
+  }
+
 protected:
   const moveit::core::LinkModel* link_model_;   /**< \brief The target link model */
   Eigen::Matrix3d desired_rotation_matrix_;     /**< \brief The desired rotation matrix in the tf frame. Guaranteed to
@@ -486,6 +491,7 @@ protected:
                                                  * efficiency. Guaranteed to be valid rotation matrix. */
   std::string desired_rotation_frame_id_;       /**< \brief The target frame of the transform tree */
   bool mobile_frame_;                           /**< \brief Whether or not the header frame is mobile or fixed */
+  int parameterization_type_;                   /**< \brief Parameterization type for orientation tolerance. */
   double absolute_x_axis_tolerance_, absolute_y_axis_tolerance_,
       absolute_z_axis_tolerance_; /**< \brief Storage for the tolerances */
 };
@@ -570,7 +576,7 @@ public:
   void print(std::ostream& out = std::cout) const override;
 
   /**
-   * \brief Returns the associated link model, or NULL if not enabled
+   * \brief Returns the associated link model, or nullptr if not enabled
    *
    *
    * @return The link model
@@ -723,7 +729,7 @@ MOVEIT_CLASS_FORWARD(VisibilityConstraint);  // Defines VisibilityConstraintPtr,
  * and the target along its Z axis to be pointing at each other.
  * Practically speaking, this ensures that the sensor has sufficient
  * visibility to the front of the target - if the target is pointing
- * the opposite direction, or is too steeply perpindicular to the
+ * the opposite direction, or is too steeply perpendicular to the
  * target, then the max_view_angle part of the constraint will be
  * violated.  The getMarkers function can again help explain this -
  * the view angle is the angular difference between the blue arrow
@@ -732,7 +738,7 @@ MOVEIT_CLASS_FORWARD(VisibilityConstraint);  // Defines VisibilityConstraintPtr,
 
  * \image html exact_opposites.png "Max view angle is evaluated at 0.0"
  * \image html fourty_five.png "Max view angle evaluates around pi/4"
- * \image html perpindicular.png "Max view angle evaluates at pi/2, the maximum"
+ * \image html perpendicular.png "Max view angle evaluates at pi/2, the maximum"
  * \image html other_side.png "Sensor pointed at wrong side of target, will violate constraint as long as max_view_angle
  > 0.0"
  *

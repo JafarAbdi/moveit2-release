@@ -36,6 +36,10 @@
 
 #include <moveit/occupancy_map_monitor/occupancy_map_monitor.h>
 #include <moveit/occupancy_map_monitor/occupancy_map_updater.h>
+#include <rclcpp/clock.hpp>
+#include <rclcpp/logger.hpp>
+#include <rclcpp/logging.hpp>
+#include <string>
 
 namespace occupancy_map_monitor
 {
@@ -59,7 +63,7 @@ void OccupancyMapUpdater::setMonitor(OccupancyMapMonitor* monitor)
 //   if (params.hasMember(param_name))
 //   {
 //     if (params[param_name].getType() == XmlRpc::XmlRpcValue::TypeInt)
-//       *value = (int)params[param_name];
+//       *value = static_cast<int>(params[param_name]);
 //     else
 //       *value = (double)params[param_name];
 //   }
@@ -70,7 +74,7 @@ void OccupancyMapUpdater::setMonitor(OccupancyMapMonitor* monitor)
 // value)
 // {
 //   if (params.hasMember(param_name))
-//     *value = (int)params[param_name];
+//     *value = static_cast<int>(params[param_name]);
 // }
 
 bool OccupancyMapUpdater::updateTransformCache(const std::string& target_frame, const rclcpp::Time& target_time)
@@ -85,7 +89,7 @@ bool OccupancyMapUpdater::updateTransformCache(const std::string& target_frame, 
       RCLCPP_ERROR_THROTTLE(
           LOGGER, steady_clock, 1000,
           "Transform cache was not updated. Self-filtering may fail. If transforms were not available yet, consider "
-          "setting robot_description_planning/shape_transform_cache_lookup_wait_time to wait longer for transforms");
+          "setting robot_description_planning.shape_transform_cache_lookup_wait_time to wait longer for transforms");
     }
     return success;
   }

@@ -37,12 +37,11 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 #include <octomap/octomap.h>
-#include <rviz_default_plugins/displays/pointcloud/point_cloud_helpers.hpp>
+#include <OgrePrerequisites.h>
 #include <rviz_common/properties/color_property.hpp>
-#include <moveit/rviz_plugin_render_tools/octomap_render.h>
-#include <OGRE/OgrePrerequisites.h>
+#include <rviz_default_plugins/displays/pointcloud/point_cloud_helpers.hpp>
+#include <vector>
 
 namespace octomap
 {
@@ -54,7 +53,8 @@ namespace moveit_rviz_plugin
 enum OctreeVoxelRenderMode
 {
   OCTOMAP_FREE_VOXELS = 1,
-  OCTOMAP_OCCUPIED_VOXELS = 2
+  OCTOMAP_OCCUPIED_VOXELS = 2,
+  OCTOMAP_DISABLED = 3
 };
 
 enum OctreeVoxelColorMode

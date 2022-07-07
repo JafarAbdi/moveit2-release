@@ -37,17 +37,24 @@
 #pragma once
 
 #include <moveit/macros/class_forward.h>
-#include <moveit/occupancy_map_monitor/occupancy_map.h>
+#include <moveit/collision_detection/occupancy_map.h>
+
 #include <geometric_shapes/shapes.h>
+#include <rclcpp/rclcpp.hpp>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+#include <map>
+#include <string>
+#include <functional>
 
 namespace occupancy_map_monitor
 {
 using ShapeHandle = unsigned int;
 using ShapeTransformCache = std::map<ShapeHandle, Eigen::Isometry3d, std::less<ShapeHandle>,
                                      Eigen::aligned_allocator<std::pair<const ShapeHandle, Eigen::Isometry3d> > >;
-using TransformCacheProvider = boost::function<bool(const std::string&, const rclcpp::Time&, ShapeTransformCache&)>;
+using TransformCacheProvider = std::function<bool(const std::string&, const rclcpp::Time&, ShapeTransformCache&)>;
 
 class OccupancyMapMonitor;
 
@@ -98,7 +105,7 @@ public:
 protected:
   OccupancyMapMonitor* monitor_;
   std::string type_;
-  OccMapTreePtr tree_;
+  collision_detection::OccMapTreePtr tree_;
   TransformCacheProvider transform_provider_callback_;
   ShapeTransformCache transform_cache_;
   bool debug_info_;
