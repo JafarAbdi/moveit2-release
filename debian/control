@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-planners-ompl
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev <!nocheck>, libomp-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-eigen3-cmake-module, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-resources-fanuc-moveit-config <!nocheck>, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-resources-pr2-description <!nocheck>, ros-humble-moveit-ros-planning, ros-humble-ompl, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-tf2-eigen, ros-humble-tf2-eigen <!nocheck>, ros-humble-tf2-ros, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-planners-ompl
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libomp-dev, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-planning, ros-humble-ompl, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-tf2-eigen, ros-humble-tf2-ros, ros-humble-ros-workspace
+Description: MoveIt interface to OMPL
