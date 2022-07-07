@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-ros
+Section: misc
+Priority: optional
+Maintainer: Michael Görner <me@v4hn.de>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-ros
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-moveit-ros-benchmarks, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-planning-interface, ros-humble-moveit-ros-robot-interaction, ros-humble-moveit-ros-visualization, ros-humble-moveit-ros-warehouse, ros-humble-ros-workspace
+Description: Components of MoveIt that use ROS
