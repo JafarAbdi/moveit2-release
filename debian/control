@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-setup-core-plugins
+Section: misc
+Priority: optional
+Maintainer: David V. Lu!! <davidvlu@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-clang-format <!nocheck>, ros-humble-ament-cmake, ros-humble-ament-cmake-lint-cmake <!nocheck>, ros-humble-ament-cmake-xmllint <!nocheck>, ros-humble-ament-index-cpp, ros-humble-ament-lint-auto <!nocheck>, ros-humble-moveit-ros-visualization, ros-humble-moveit-setup-framework, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-srdfdom, ros-humble-urdf, ros-humble-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-setup-core-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-ament-index-cpp, ros-humble-moveit-ros-visualization, ros-humble-moveit-setup-framework, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-srdfdom, ros-humble-urdf, ros-humble-ros-workspace
+Description: Core (meta) plugins for MoveIt Setup Assistant
