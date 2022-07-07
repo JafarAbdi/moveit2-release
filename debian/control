@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-ros-perception
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), freeglut3-dev, libeigen3-dev, libgl1-mesa-dev, libglew-dev, libglu1-mesa-dev, libomp-dev, ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-message-filters, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-occupancy-map-monitor, ros-humble-moveit-ros-planning, ros-humble-object-recognition-msgs, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-sensor-msgs, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-urdf, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-ros-perception
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, freeglut3-dev, libgl1-mesa-dev, libglew-dev, libglu1-mesa-dev, libomp-dev, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-message-filters, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-occupancy-map-monitor, ros-humble-moveit-ros-planning, ros-humble-object-recognition-msgs, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-sensor-msgs, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-urdf, ros-humble-ros-workspace
+Description: Components of MoveIt connecting to perception
