@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-planners-chomp
+Section: misc
+Priority: optional
+Maintainer: Chittaranjan Srinivas Swaminathan <chitt@live.in>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-chomp-motion-planner, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-planners-chomp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-chomp-motion-planner, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-workspace
+Description: The interface for using CHOMP within MoveIt
