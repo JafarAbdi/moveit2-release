@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-chomp-optimizer-adapter
+Section: misc
+Priority: optional
+Maintainer: Raghavender Sahdev <raghavendersahdev@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-chomp-motion-planner, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-pluginlib (>= 1.11.2), ros-humble-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-chomp-optimizer-adapter
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-chomp-motion-planner, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-pluginlib (>= 1.11.2), ros-humble-ros-workspace
+Description: MoveIt planning request adapter utilizing chomp for solution optimization
