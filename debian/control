@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-setup-assistant
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), qtbase5-dev, ros-humble-ament-clang-format <!nocheck>, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-cmake-lint-cmake <!nocheck>, ros-humble-ament-cmake-xmllint <!nocheck>, ros-humble-ament-index-cpp, ros-humble-ament-lint-auto <!nocheck>, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-setup-framework, ros-humble-moveit-setup-srdf-plugins, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-setup-assistant
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, qtbase5-dev, ros-humble-ament-index-cpp, ros-humble-moveit-setup-framework, ros-humble-moveit-setup-srdf-plugins, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-workspace
+Description: Generates a configuration package that makes it easy to use MoveIt
