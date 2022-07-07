@@ -1,0 +1,12 @@
+Source: ros-humble-pilz-industrial-motion-planner-testutils
+Section: misc
+Priority: optional
+Maintainer: Christian Henkel <c.henkel@pilz.de>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-eigen3-cmake-module, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-rclcpp, ros-humble-tf2-eigen, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-pilz-industrial-motion-planner-testutils
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-eigen3-cmake-module, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-rclcpp, ros-humble-ros-workspace
+Description: Helper scripts and functionality to test industrial motion generation
