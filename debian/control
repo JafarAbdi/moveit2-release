@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-ros-planning-interface
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, python3-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-eigen3-cmake-module, ros-humble-geometry-msgs, ros-humble-moveit-common, ros-humble-moveit-configs-utils <!nocheck>, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-planners-ompl <!nocheck>, ros-humble-moveit-resources-fanuc-moveit-config <!nocheck>, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-warehouse, ros-humble-moveit-simple-controller-manager <!nocheck>, ros-humble-rclcpp, ros-humble-rclcpp-action, ros-humble-rclpy, ros-humble-ros-testing <!nocheck>, ros-humble-rviz2 <!nocheck>, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-ros-planning-interface
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-dev, ros-humble-geometry-msgs, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-warehouse, ros-humble-rclcpp, ros-humble-rclcpp-action, ros-humble-rclpy, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-ros-workspace
+Description: Components of MoveIt that offer simpler interfaces to planning and execution
