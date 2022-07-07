@@ -1,0 +1,13 @@
+Source: ros-humble-moveit-runtime
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-runtime
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-moveit-core, ros-humble-moveit-planners, ros-humble-moveit-plugins, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-planning-interface, ros-humble-moveit-ros-warehouse, ros-humble-ros-workspace
+Description: moveit_runtime meta package contains MoveIt packages that are essential for its runtime (e.g.
+ running MoveIt on robots).
