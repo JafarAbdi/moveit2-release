@@ -1,0 +1,12 @@
+Source: ros-humble-pilz-industrial-motion-planner
+Section: misc
+Priority: optional
+Maintainer: Christian Henkel <c.henkel@pilz.de>
+Build-Depends: debhelper (>= 9.0.0), libboost-all-dev <!nocheck>, ros-humble-ament-cmake, ros-humble-ament-cmake-gmock <!nocheck>, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-eigen3-cmake-module, ros-humble-geometry-msgs, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-moveit-resources-prbt-moveit-config <!nocheck>, ros-humble-moveit-resources-prbt-pg70-support <!nocheck>, ros-humble-moveit-resources-prbt-support <!nocheck>, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-planning-interface, ros-humble-orocos-kdl-vendor, ros-humble-pilz-industrial-motion-planner-testutils <!nocheck>, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-testing <!nocheck>, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-eigen-kdl, ros-humble-tf2-geometry-msgs, ros-humble-tf2-kdl, ros-humble-tf2-ros, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-pilz-industrial-motion-planner
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-eigen3-cmake-module, ros-humble-geometry-msgs, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-moveit-ros-move-group, ros-humble-moveit-ros-planning, ros-humble-moveit-ros-planning-interface, ros-humble-orocos-kdl-vendor, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-tf2, ros-humble-tf2-eigen, ros-humble-tf2-eigen-kdl, ros-humble-tf2-geometry-msgs, ros-humble-tf2-kdl, ros-humble-tf2-ros, ros-humble-ros-workspace
+Description: MoveIt plugin to generate industrial trajectories PTP, LIN, CIRC and sequences thereof.
