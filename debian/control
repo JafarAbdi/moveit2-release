@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-ros-occupancy-map-monitor
+Section: misc
+Priority: optional
+Maintainer: Henning Kayser <henningkayser@picknik.ai>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gmock <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-eigen3-cmake-module, ros-humble-geometric-shapes, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-octomap, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-tf2-ros, ros-humble-ros-workspace
+Homepage: http://moveit.ros.org
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-ros-occupancy-map-monitor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, ros-humble-eigen3-cmake-module, ros-humble-geometric-shapes, ros-humble-moveit-common, ros-humble-moveit-core, ros-humble-moveit-msgs, ros-humble-octomap, ros-humble-pluginlib (>= 1.11.2), ros-humble-rclcpp, ros-humble-tf2-ros, ros-humble-ros-workspace
+Description: Components of MoveIt connecting to occupancy map
